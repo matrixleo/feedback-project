@@ -21,28 +21,38 @@ export const FeedbackProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const addFeedback = async(newFeedback) => {
-    const response = await fetch ('/feedback',{
-      method:"POST",
-      headers:{
-        'Content-Type' : 'application/json'
+  const addFeedback = async (newFeedback) => {
+    const response = await fetch("/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newFeedback),
-    })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
 
     setFeedback([newFeedback, ...feedback]);
   };
 
-  const updateFeedback = (id, updItem) => {
+  const updateFeedback = async (id, updItem) => {
+    const response = await fetch(`feedback/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updItem),
+    })
+    const data = await response.json()
+    
     setFeedback(
-      feedback.map((item) => (item.id === id ? { ...item, ...updItem } : item))
+      feedback.map((item) => (item.id === id ? { ...item, ...data } : item))
     );
   };
 
-  const deleteFeedback = (id) => {
+  const deleteFeedback = async (id) => {
     if (window.confirm("Are you sure you wanna delete this?")) {
+      await fetch(`/feedback/${id}`, { method: "DELETE" });
       setFeedback(feedback.filter((item) => item.id !== id));
     }
   };
